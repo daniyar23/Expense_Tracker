@@ -13,28 +13,28 @@ type Expense struct {
 	Category    string
 }
 
-func NewExpense(
-	id int,
-	desc string,
-	amount float64,
-	date time.Time,
-	category string,
+var NewExpense = func(
+	Id int,
+	Desc string,
+	Amount float64,
+	Date time.Time,
+	Category string,
 ) (*Expense, error) {
 
-	if desc == "" {
+	if Desc == "" {
 		return nil, errors.New("Описание не может быть пустым!")
 	}
-	if amount <= 0 {
+	if Amount <= 0 {
 		return nil, errors.New("Траты должны быть больше нуля!")
 	}
-	if category == "" {
+	if Category == "" {
 		return nil, errors.New("Категория не может быть пустой!")
 	}
 	return &Expense{
-		ID:          id,
-		Description: desc,
-		Amount:      amount,
-		Date:        date,
-		Category:    category,
+		ID:          Id,
+		Description: Desc,
+		Amount:      Amount,
+		Date:        Date,
+		Category:    Category,
 	}, nil
 }

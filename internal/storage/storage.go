@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"Expense_Tracker/internal/expenses"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -9,16 +10,14 @@ import (
 	"time"
 )
 
-type Expense_csv struct {
-	ID          int
-	Description string
-	Amount      float64
-	Date        time.Time
-	Category    string
-}
-
 func CreateData() error {
-	file, err := os.Create("data/expenses.csv")
+	datafolder := "../data"
+	err := os.MkdirAll(datafolder, 0755)
+	if err != nil {
+		return fmt.Errorf("ошибка создания папки: %w", err)
+	}
+
+	file, err := os.Create(datafolder + "/expenses.csv")
 	if err != nil {
 		return fmt.Errorf("Ошибка создания файла: %w", err)
 	}
@@ -49,7 +48,8 @@ func CheckData() error {
 
 	return nil
 }
-func LoadData() ([]Expense_csv, error) {
+
+func LoadData() ([]expenses.Expense, error) {
 	file, err := os.Open("data/expenses.csv")
 	if err != nil {
 		return nil, fmt.Errorf("Ошибка открытия файла: %w", err)
@@ -61,7 +61,7 @@ func LoadData() ([]Expense_csv, error) {
 		return nil, fmt.Errorf("Ошибка чтения заголовков: %w", err)
 	}
 
-	var tracks []Expense_csv
+	var tracks []expenses.Expense
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
@@ -88,7 +88,7 @@ func LoadData() ([]Expense_csv, error) {
 			return nil, fmt.Errorf("Недостаточно данных в строке")
 		}
 
-		tracks = append(tracks, Expense_csv{
+		tracks = append(tracks, expenses.Expense{
 			ID:          id,
 			Description: record[1],
 			Amount:      amount,
@@ -99,7 +99,7 @@ func LoadData() ([]Expense_csv, error) {
 	return tracks, nil
 }
 
-func SaveData(expense []Expense_csv) error {
+func SaveData(expenses []expenses.Expense) error {
 	file, err := os.OpenFile("data/expenses.csv", os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return fmt.Errorf("Ошибка создания файла: %w", err)
@@ -108,7 +108,7 @@ func SaveData(expense []Expense_csv) error {
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
-	for _, e := range expense {
+	for _, e := range expenses {
 		row := []string{
 			strconv.Itoa(e.ID),
 			e.Description,
