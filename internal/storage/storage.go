@@ -11,7 +11,7 @@ import (
 )
 
 func CreateData() error {
-	datafolder := "../data"
+	datafolder := "data"
 	err := os.MkdirAll(datafolder, 0755)
 	if err != nil {
 		return fmt.Errorf("ошибка создания папки: %w", err)
@@ -57,7 +57,8 @@ func LoadData() ([]expenses.Expense, error) {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	if _, err := reader.Read(); err != nil {
+	_, err = reader.Read()
+	if err != nil {
 		return nil, fmt.Errorf("Ошибка чтения заголовков: %w", err)
 	}
 
@@ -65,7 +66,6 @@ func LoadData() ([]expenses.Expense, error) {
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
-			fmt.Println("Файл успешно загружен")
 			break
 		} else if err != nil {
 			return nil, fmt.Errorf("Ошибка загрузки файла: %w", err)
@@ -100,7 +100,7 @@ func LoadData() ([]expenses.Expense, error) {
 }
 
 func SaveData(expenses []expenses.Expense) error {
-	file, err := os.OpenFile("data/expenses.csv", os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("data/expenses.csv", os.O_WRONLY, 0644)
 	if err != nil {
 		return fmt.Errorf("Ошибка создания файла: %w", err)
 	}

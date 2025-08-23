@@ -1,0 +1,19 @@
+[
+  {
+    "label": "Go: Run server (Delve)",
+    "adapter": "Delve",
+    "request": "launch",
+    "mode": "debug",
+    "program": "./cmd/expensetracker",
+    "args": [],
+    "env": {}
+  },
+  {
+    "label": "Go: Test current pkg",
+    "adapter": "Delve",
+    "request": "launch",
+    "mode": "test",
+    "program": ".",
+    "args": ["-test.run", "$ZED_SYMBOL"]
+  }
+]
